@@ -1,25 +1,44 @@
-function letterCombinations(input_digit) {
-  //Complete the function
-	const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser')
+var digitsToLetters = {
+  
+  2: 'abc',
+  3: 'def',
+  4: 'ghi',
+  5: 'jkl',
+  6: 'mno',
+  7: 'pqrs',
+  8: 'tuv',
+  9: 'wxyz'
+  
+};
 
-const app = express();
+var letterCombinations = (digits) => {
+    
+  if (digits === '') {
+    return [];
+  }
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+  var possibleValues = digits.split('').map(value => digitsToLetters[value]);
+  
+  var possibleCombinations = [];
 
-const letterCombination = require('./script');
+  var recursiveCombine = (start, result) => {
 
-app.use(express.static(__dirname))
+    if (result.length === digits.length) {
+      possibleCombinations.push(result.join(''));
+    }
 
-app.post('/lettercomb',(req, res) => {
-  const input = req.body.num
-  const answer = letterCombination(input) 
-  res.send({message:JSON.stringify(answer)})
-})
+    for (var i = start; i < possibleValues.length; i++) {
+      for (var j = 0; j < possibleValues[i].length; j++) {
+        result.push(possibleValues[i][j]);
+        recursiveCombine(i + 1, result);
+        result.pop();
+      } 
+    }
+  }
 
-module.exports = app;
-}
+  recursiveCombine(0, []);
+  return possibleCombinations;
+
+};
 
 module.exports = letterCombinations;
